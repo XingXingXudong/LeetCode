@@ -14,6 +14,6 @@ def perfect_square(n):
 
 
 if __name__ == '__main__':
-    for i in range(1, 15):
+    for i in range(500, 2000):
         print(i, perfect_square(i))
 
