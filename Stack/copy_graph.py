@@ -91,8 +91,29 @@ class Solution:
 
     def dfs_clone_graph(self, node):
         """Clone graph use DFS"""
-        pass
 
+        if not node:
+            return 
+
+        stack = []
+        node_set = {}
+
+        copy_node = UndirectedGraphNode(node.label)
+        node_set[node] = copy_node
+        stack.append(node)
+
+        while stack:
+            cur_node = stack.pop()
+            for n in cur_node.neighbors:
+                if n not in node_set:
+                    n_copy = UndirectedGraphNode(n.label)
+                    node_set[n] = n_copy
+                    node_set[cur_node].neighbors.append(n_copy)
+                    stack.append(n)
+                else:
+                    node_set[cur_node].neighbors.append(node_set[n])
+
+        return copy_node
 
 
 if __name__ == '__main__':
@@ -127,6 +148,8 @@ if __name__ == '__main__':
     print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
     print_graph(copy_graph.recursive_clone_graph(node_0))
 
+    print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+    print_graph(copy_graph.dfs_clone_graph(node_0))
 
 
 
