@@ -56,23 +56,18 @@ class Solution:
             return []
         rtn = list()
         stack = list()
-        traversed = set()
         stack.append(root)
-        traversed.add(root)
-        traversed.add(None)
         while stack:
-            print(stack)
-            print(rtn)
-            print(traversed)
-            if stack[-1].left and stack[-1].left not in traversed:
+            if stack[-1].left:
                 stack.append(stack[-1].left)
-                traversed.add(stack[-1].left)
             else:
                 cur = stack.pop()
+                while not cur.right and stack:
+                    rtn.append(cur.val)
+                    cur = stack.pop()
                 rtn.append(cur.val)
-                if cur.right and cur.right not in traversed:
+                if cur.right:
                     stack.append(cur.right)
-                    traversed.add(cur.right)
         return rtn
 
     def inorder_traversal_recursive(self, root):
@@ -106,6 +101,103 @@ class Solution:
         helper_2(root)    # 高效
         return rtn
 
+    def postorder_traversal(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        rtn = list()
+        if not root:
+            return rtn
+        stack = list()
+        stack.append(root)
+        while stack:
+            cur = stack.pop()
+            rtn.append(cur.val)
+            left, right = cur.left, cur.right
+            if left:
+                stack.append(left)
+            if right:
+                stack.append(right)
+        return rtn[::-1]
+
+    def postorder_traversal_recursive(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        rtn = []
+        if not root:
+            return rtn
+        def helper(node):
+            if node.left:
+                helper(node.left)
+            if node.right:
+                helper(node.right)
+            rtn.append(node.val)
+        helper(root)
+        return rtn
+
+    def level_order_traversal(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        rtn = []
+        if not root:
+            return rtn
+        queue = list()
+        queue.append(root)
+        while queue:
+            cur_val = list()
+            cur_level = queue.copy()
+            queue.clear()
+            for x in cur_level:
+                cur_val.append(x.val)
+                if x.left:
+                    queue.append(x.left)
+                if x.right:
+                    queue.append(x.right)
+            rtn.append(cur_val)
+        return rtn
+
+    def max_depth_top_down(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        self.depth = 0
+        # def helper(root, d):
+        #     self.depth = max(self.depth, d+1)
+        #     if root.left:
+        #         helper(root.left, d+1)
+        #     if root.right:
+        #         helper(root.right, d+1)
+        # helper(root, 0)
+        def helper(root, d):
+            if not root:
+                return 
+            if not (root.left or root.right):
+                self.depth = max(self.depth, d)
+            helper(root.left, d+1)
+            helper(root.right, d+1)
+        helper(root, 1)
+        return self.depth
+
+    def max_depth_bottom_up(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        def helper(node):
+            if not node:
+                return 0
+            left_depth = helper(node.left)
+            right_depth = helper(node.right)
+            return max(left_depth, right_depth) + 1
+        return helper(root)
+
+
 
 if __name__ == '__main__':
     node_3 = TreeNode(3)
@@ -113,11 +205,41 @@ if __name__ == '__main__':
     node_2.left = node_3
     node_1 = TreeNode(1)
     node_1.right = node_2
+
     print(node_1)
     solution = Solution()
     print(solution.preorder_traversal(node_1))
     print(solution.preorder_traversal_recursive(node_1))
     print(solution.inorder_traversal(node_1))
     print(solution.inorder_traversal_recursive(node_1))
+    print(solution.postorder_traversal_recursive(node_1))
+    print(solution.postorder_traversal(node_1))
+    print(solution.level_order_traversal(node_1))
+    print(solution.max_depth_top_down(node_1))
+    print(solution.max_depth_bottom_up(node_1))
+
+    only_node = TreeNode(1)
+    print(solution.preorder_traversal(only_node))
+    print(solution.preorder_traversal_recursive(only_node))
+    print(solution.inorder_traversal(only_node))
+    print(solution.inorder_traversal_recursive(only_node))
+    print(solution.postorder_traversal(only_node))
+    print(solution.level_order_traversal(only_node))
+    print(solution.max_depth_top_down(only_node))
+    print(solution.max_depth_bottom_up(only_node))
+
+    node_a = TreeNode(1)
+    node_b = TreeNode(3)
+    node_b.left = node_a
+    node_c = TreeNode(2)
+    node_c.left = node_b
+
+    print(solution.inorder_traversal(node_c))
+    print(solution.inorder_traversal_recursive(node_c))
+    print(solution.postorder_traversal_recursive(node_c))
+    print(solution.postorder_traversal(node_c))
+    print(solution.level_order_traversal(node_c))
+    print(solution.max_depth_top_down(node_c))
+    print(solution.max_depth_bottom_up(node_c))
 
 
