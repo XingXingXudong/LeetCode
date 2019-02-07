@@ -7,9 +7,13 @@ class TreeNode:
         self.val = x
         self.left = None
         self.right = None
+        self.next = None
 
     def __repr__(self):
-        values = [self.val]
+        val = str(self.val)
+        if self.next is None:
+            val += '#'
+        ch = []
         queue = deque()
         if self.left:
             queue.append(self.left)
@@ -17,13 +21,17 @@ class TreeNode:
             queue.append(self.right)
         while queue:
             cur = queue.popleft()
-            values.append(cur.val)
+            ch.append(cur.val)
             if cur.left:
                 queue.append(cur.left)
             if cur.right:
                 queue.append(cur.right)
 
-        return ", ".join([str(x) for x in values])
+        ch_str = ""
+        if ch:
+            ch_str = "<" + ",".join(str(x) for x in ch) + ">"
+
+        return val + '-' + ch_str
 
     __str__ = __repr__
 
